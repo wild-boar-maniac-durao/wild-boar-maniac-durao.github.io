@@ -183,6 +183,8 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
   </div>
 </header>
 
+<div class="frase" id="frase"><b>URRR</b><span id="frase-txt"></span></div>
+
 <div id="erro" style="display:none" class="aviso"></div>
 
 <div class="tiles" id="tiles"></div>
@@ -209,6 +211,27 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
     <div class="paginas" id="paginas"></div>
   </div>
 </div>
+
+<svg id="corrida" viewBox="0 0 240 160" aria-hidden="true">
+  <g fill="none" stroke="currentColor" stroke-width="3.4"
+     stroke-linejoin="round" stroke-linecap="round">
+    <path d="M22 73 L33 70 Q43 67 49 57 L56 47 L57 25 L74 47
+             L81 39 L86 23 L93 38 L100 20 L108 36 L116 23 L124 40
+             L134 31 L142 45 Q162 40 180 49 Q197 58 201 74 Q204 89 196 100
+             L194 125 L180 125 L179 102 Q170 104 162 104
+             L161 125 L147 125 L147 101 Q128 106 110 102
+             L109 125 L95 125 L94 100 Q82 98 74 95
+             L73 125 L59 125 L59 93 Q46 92 36 91 L24 89 Z"
+          fill="currentColor" fill-opacity=".08"/>
+    <path d="M40 91 Q27 87 24 68" stroke-width="4.4"/>
+    <path d="M63 42 L64 30" stroke-width="2.4"/>
+    <path d="M25 86 Q32 85 40 83" stroke-width="2.4"/>
+    <ellipse cx="28" cy="78" rx="3" ry="2.4" fill="currentColor" stroke="none"/>
+    <circle cx="51" cy="62" r="3" fill="currentColor" stroke="none"/>
+    <path d="M201 78 q11 3 9 12 q-2 8-10 6" stroke-width="2.8"/>
+    <path d="M59 125 h14 M95 125 h14 M147 125 h14 M180 125 h14" stroke-width="4.6"/>
+  </g>
+</svg>
 
 </main>
 <script>
@@ -435,6 +458,65 @@ document.getElementById("ordem").addEventListener("click", e => {
   e.target.textContent = desc ? "Mais recentes primeiro" : "Mais antigas primeiro";
   pagina = 1; desenharTabela();
 });
+
+/* ------------------------------------------------------------------ frases */
+// Editavel em frases.json, sem mexer no HTML. A cada 3 trocas passa um javali.
+const FRASES_PADRAO = ["URRR"];
+let frases = FRASES_PADRAO, trocas = 0, ultima = -1, timerFrases = null;
+
+async function carregarFrases() {
+  try {
+    const r = await fetch("frases.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    // aceita {"frases":[...]} ou o array cru, para nao quebrar se editarem torto
+    const lista = Array.isArray(j) ? j : j.frases;
+    if (Array.isArray(lista) && lista.length) frases = lista.filter(f => String(f).trim());
+    const seg = Number(Array.isArray(j) ? 0 : j.segundos);
+    return seg > 0 ? seg * 1000 : 8000;
+  } catch (e) {
+    // frases.json ausente ou torto nao pode derrubar o resto da pagina
+    return 8000;
+  }
+}
+
+function sortear() {
+  if (frases.length < 2) return 0;
+  let i;                                     // nunca repetir a mesma seguida
+  do { i = Math.floor(Math.random() * frases.length); } while (i === ultima);
+  return i;
+}
+
+function trocarFrase() {
+  const cx = document.getElementById("frase");
+  const txt = document.getElementById("frase-txt");
+  cx.classList.add("trocando");
+  setTimeout(() => {
+    ultima = sortear();
+    txt.textContent = frases[ultima] || "";
+    cx.classList.remove("trocando");
+    if (++trocas % 3 === 0) correr();
+  }, 250);
+}
+
+function correr() {
+  const j = document.getElementById("corrida");
+  if (!j) return;
+  j.classList.remove("correndo");
+  void j.offsetWidth;                        // reinicia a animacao
+  j.classList.add("correndo");
+}
+
+// sem isto a classe fica grudada para sempre e o estado do elemento mente
+document.getElementById("corrida")
+  .addEventListener("animationend", e => e.target.classList.remove("correndo"));
+
+(async () => {
+  const ms = await carregarFrases();
+  ultima = sortear();
+  document.getElementById("frase-txt").textContent = frases[ultima] || "";
+  timerFrases = setInterval(trocarFrase, ms);
+})();
 
 carregar(); bater();
 setInterval(bater, 15000);          // o pulso e o que mais envelhece na tela
