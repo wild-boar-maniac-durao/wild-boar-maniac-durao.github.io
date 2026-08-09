@@ -53,7 +53,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 .frase{margin:.85rem 0 1.6rem;padding:.85rem 1.1rem;border:1px dashed var(--line);
   border-radius:12px;background:var(--card);color:var(--mut);font-size:.95rem;
   min-height:3.1rem;display:flex;align-items:center;gap:.6rem}
-.frase b{color:var(--acc);font-weight:650;flex:none}
 .frase span{transition:opacity .25s}
 .frase.trocando span{opacity:0}
 
@@ -181,7 +180,7 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
   </div>
 </header>
 
-<div class="frase" id="frase"><b>URRR</b><span id="frase-txt"></span></div>
+<div class="frase" id="frase"><span id="frase-txt"></span></div>
 
 <div id="erro" style="display:none" class="aviso"></div>
 
@@ -459,14 +458,19 @@ document.getElementById("ordem").addEventListener("click", e => {
 
 /* ------------------------------------------------------------------ frases */
 // Editavel em frases.json, sem mexer no HTML. A cada 3 trocas passa um javali.
-const FRASES_PADRAO = ["URRR"];
-let frases = FRASES_PADRAO, trocas = 0, ultima = -1, timerFrases = null;
+let frases = [], trocas = 0, ultima = -1, timerFrases = null;
 
 async function carregarFrases() {
   try {
     const r = await fetch("frases.json?t=" + Date.now(), { cache: "no-store" });
     if (!r.ok) throw new Error(r.status);
-    const j = await r.json();
+    // Nao usar r.json(): ele assume UTF-8 e o arquivo e editado na mao, onde
+    // Bloco de Notas e PowerShell salvam em ANSI (windows-1252) sem avisar.
+    // Byte invalido em UTF-8 vira "�" e o acento aparece quebrado na tela.
+    const buf = await r.arrayBuffer();
+    let texto = new TextDecoder("utf-8").decode(buf);
+    if (texto.includes("�")) texto = new TextDecoder("windows-1252").decode(buf);
+    const j = JSON.parse(texto.replace(/^﻿/, ""));
     // aceita {"frases":[...]} ou o array cru, para nao quebrar se editarem torto
     const lista = Array.isArray(j) ? j : j.frases;
     if (Array.isArray(lista) && lista.length) frases = lista.filter(f => String(f).trim());
@@ -511,6 +515,8 @@ document.getElementById("corrida")
 
 (async () => {
   const ms = await carregarFrases();
+  // sem frases, some a caixa em vez de deixar um retangulo vazio na pagina
+  if (!frases.length) { document.getElementById("frase").style.display = "none"; return; }
   ultima = sortear();
   document.getElementById("frase-txt").textContent = frases[ultima] || "";
   timerFrases = setInterval(trocarFrase, ms);
