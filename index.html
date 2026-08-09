@@ -49,6 +49,31 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   100% {transform:translate(0,0)       rotate(0deg)   scaleX(1)}
 }
 @media (prefers-reduced-motion:reduce){.mascote{animation:none}}
+
+/* ------------------------------------------------------------------ frases */
+.frase{margin:.85rem 0 1.6rem;padding:.85rem 1.1rem;border:1px dashed var(--line);
+  border-radius:12px;background:var(--card);color:var(--mut);font-size:.95rem;
+  min-height:3.1rem;display:flex;align-items:center;gap:.6rem}
+.frase b{color:var(--acc);font-weight:650;flex:none}
+.frase span{transition:opacity .25s}
+.frase.trocando span{opacity:0}
+
+/* javali que atravessa a tela a cada 3 frases */
+#corrida{position:fixed;left:-170px;bottom:9%;width:130px;height:auto;
+  color:var(--acc);pointer-events:none;z-index:60;opacity:0}
+#corrida.correndo{animation:javali-corre 2.8s steps(12,end) 1}
+@keyframes javali-corre{
+  0%   {opacity:0;transform:translate(0,0)          rotate(0deg)}
+  5%   {opacity:1;transform:translate(5vw,-12px)    rotate(-8deg)}
+  21%  {opacity:1;transform:translate(23vw,7px)     rotate(7deg)}
+  37%  {opacity:1;transform:translate(41vw,-14px)   rotate(-9deg)}
+  53%  {opacity:1;transform:translate(59vw,6px)     rotate(8deg)}
+  69%  {opacity:1;transform:translate(77vw,-13px)   rotate(-7deg)}
+  85%  {opacity:1;transform:translate(95vw,5px)     rotate(10deg)}
+  96%  {opacity:1;transform:translate(112vw,-9px)   rotate(-6deg)}
+  100% {opacity:0;transform:translate(125vw,0)      rotate(0deg)}
+}
+@media (prefers-reduced-motion:reduce){#corrida{display:none}}
 .titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
 .titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
 
