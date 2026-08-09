@@ -1,0 +1,11 @@
+# so o painel vai para o repositorio.
+# o livro completo, os videos e os recortes ficam na maquina.
+
+livro_caixa.csv
+*.mp4
+*.log
+conferencia*/
+dados/
+videos/
+__pycache__/
+.venv/

@@ -1,0 +1,47 @@
+# Publica esta pasta no GitHub Pages.
+#
+# Por que um workflow proprio em vez do modo "servir da branch":
+#
+# O modo branch tem limite flexivel de 10 builds por hora. Com o agente
+# empurrando o heartbeat de 5 em 5 minutos sao 12 por hora - encostaria no
+# limite o tempo todo. A documentacao do GitHub diz que esse limite NAO se
+# aplica a site publicado por workflow proprio, que e o caso aqui.
+#
+# Em repositorio publico os minutos de Actions sao gratuitos, entao rodar a
+# cada push nao gasta cota.
+#
+# Se voce baixar a cadencia do heartbeat para 10 min ou mais, o modo branch
+# resolve e este arquivo vira desnecessario.
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Um push durante um deploy em andamento cancela a fila e mantem o mais novo:
+# com push a cada 5 min, sem isto a fila cresce sem parar.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

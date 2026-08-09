@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Livro-caixa</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#fbfaf8; --fg:#1a1815; --mut:#6f6a62; --line:#e6e1d8; --card:#fff;
+  --acc:#8a5a2b; --acc-soft:#f0e6d8;
+  --ok:#2f7d4f; --warn:#a86a12; --bad:#a33a2a;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#14130f; --fg:#ece8e1; --mut:#9a938a; --line:#2b2822; --card:#1c1a15;
+  --acc:#d69a5c; --acc-soft:#2a2119;
+  --ok:#5fbf85; --warn:#e0a94a; --bad:#e0705c;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  padding:2.5rem 1.25rem 5rem}
+main{max-width:66rem;margin:0 auto}
+
+/* ---------------------------------------------------------------- cabecalho */
+header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:.5rem}
+.mascote{width:104px;height:auto;color:var(--acc);flex:none}
+.titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
+.titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
+
+/* ---------------------------------------------------------------- heartbeat */
+.pulso{display:inline-flex;align-items:center;gap:.55rem;margin-top:.6rem;
+  padding:.4rem .75rem;border:1px solid var(--line);border-radius:999px;
+  background:var(--card);font-size:.85rem;box-shadow:var(--shadow)}
+.bolha{width:.55rem;height:.55rem;border-radius:50%;background:var(--mut);flex:none}
+.pulso.vivo .bolha{background:var(--ok);animation:bate 2s ease-in-out infinite}
+.pulso.atraso .bolha{background:var(--warn)}
+.pulso.morto .bolha{background:var(--bad)}
+.pulso.vivo{border-color:color-mix(in srgb,var(--ok) 35%,var(--line))}
+.pulso.morto{border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+@keyframes bate{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+@media(prefers-reduced-motion:reduce){.pulso.vivo .bolha{animation:none}}
+.pulso b{font-weight:600}
+.pulso .quando{color:var(--mut)}
+
+/* ------------------------------------------------------------------ blocos */
+h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--mut);
+  font-weight:650;margin:2.75rem 0 .75rem}
+.tiles{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
+  margin-top:1.75rem}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:.9rem 1rem;box-shadow:var(--shadow)}
+.tile .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.tile .v{font-size:1.45rem;font-weight:650;margin-top:.15rem;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tile .n{font-size:.75rem;color:var(--mut);margin-top:.1rem}
+
+/* ------------------------------------------------------------------ tabelas */
+.quadro{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.rolagem{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{padding:.55rem .8rem;text-align:left;border-bottom:1px solid var(--line);
+  white-space:nowrap}
+th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);
+  font-weight:650;background:color-mix(in srgb,var(--card) 70%,var(--bg))}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:color-mix(in srgb,var(--acc-soft) 45%,transparent)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+td.msg{white-space:normal;min-width:14rem;max-width:24rem;color:var(--mut);font-size:.84rem}
+td.vazio{color:var(--mut);opacity:.45}
+.selo{font-size:.7rem;padding:.1rem .45rem;border-radius:5px;border:1px solid currentColor;
+  white-space:nowrap}
+.s-sim{color:var(--acc)} .s-nao{color:var(--mut);opacity:.7} .s-ind{color:var(--warn)}
+.barra{height:.45rem;border-radius:3px;background:var(--acc);opacity:.7;min-width:2px}
+
+/* --------------------------------------------------------------- paginacao */
+.ferramentas{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem}
+input[type=search]{flex:1;min-width:11rem;padding:.45rem .7rem;border-radius:9px;
+  border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:.88rem}
+input[type=search]:focus{outline:2px solid var(--acc);outline-offset:1px}
+.pag{display:flex;gap:.4rem;align-items:center;justify-content:space-between;
+  padding:.65rem .8rem;flex-wrap:wrap;
+  background:color-mix(in srgb,var(--card) 70%,var(--bg));border-top:1px solid var(--line)}
+.pag .info{color:var(--mut);font-size:.82rem}
+button{padding:.35rem .7rem;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--fg);font:inherit;font-size:.84rem;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+button:disabled{opacity:.4;cursor:default}
+.paginas{display:flex;gap:.3rem;flex-wrap:wrap}
+.paginas button.atual{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+
+.aviso{padding:1.25rem;border:1px dashed var(--line);border-radius:12px;color:var(--mut);
+  font-size:.88rem;background:var(--card)}
+.aviso code{background:var(--bg);padding:.1rem .35rem;border-radius:4px;font-size:.9em}
+footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
+  color:var(--mut);font-size:.8rem}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <svg class="mascote" viewBox="0 0 240 160" role="img" aria-label="Javali">
+    <g fill="none" stroke="currentColor" stroke-width="3.4"
+       stroke-linejoin="round" stroke-linecap="round">
+      <path d="M22 73 L33 70 Q43 67 49 57 L56 47 L57 25 L74 47
+               L81 39 L86 23 L93 38 L100 20 L108 36 L116 23 L124 40
+               L134 31 L142 45 Q162 40 180 49 Q197 58 201 74 Q204 89 196 100
+               L194 125 L180 125 L179 102 Q170 104 162 104
+               L161 125 L147 125 L147 101 Q128 106 110 102
+               L109 125 L95 125 L94 100 Q82 98 74 95
+               L73 125 L59 125 L59 93 Q46 92 36 91 L24 89 Z"
+            fill="currentColor" fill-opacity=".08"/>
+      <path d="M40 91 Q27 87 24 68" stroke-width="4.4"/>
+      <path d="M63 42 L64 30" stroke-width="2.4"/>
+      <path d="M86 52 Q78 74 84 97" stroke-width="2.2" opacity=".55"/>
+      <path d="M168 56 Q178 76 173 99" stroke-width="2.2" opacity=".55"/>
+      <path d="M25 86 Q32 85 40 83" stroke-width="2.4"/>
+      <ellipse cx="28" cy="78" rx="3" ry="2.4" fill="currentColor" stroke="none"/>
+      <circle cx="51" cy="62" r="3" fill="currentColor" stroke="none"/>
+      <path d="M201 78 q11 3 9 12 q-2 8-10 6" stroke-width="2.8"/>
+      <path d="M59 125 h14 M95 125 h14 M147 125 h14 M180 125 h14" stroke-width="4.6"/>
+    </g>
+  </svg>
+  <div class="titulo">
+    <h1>Livro-caixa</h1>
+    <p id="sub">carregando...</p>
+    <div class="pulso" id="pulso">
+      <span class="bolha"></span>
+      <span>Última atividade do servidor: <b id="hb">—</b></span>
+      <span class="quando" id="hbq"></span>
+    </div>
+  </div>
+</header>
+
+<div id="erro" style="display:none" class="aviso"></div>
+
+<div class="tiles" id="tiles"></div>
+
+<h2>Por dia</h2>
+<div class="quadro"><div class="rolagem"><table id="tdias">
+  <thead><tr><th>Dia</th><th class="num">Doações</th><th class="num">Repetidas</th>
+  <th class="num">Doadores</th><th class="num">Total</th><th class="num">Ticket médio</th>
+  <th>Distribuição</th></tr></thead><tbody></tbody>
+</table></div></div>
+
+<h2>Todas as doações</h2>
+<div class="ferramentas">
+  <input type="search" id="busca" placeholder="Filtrar por doador ou mensagem...">
+  <button id="ordem" title="Inverter ordem">Mais recentes primeiro</button>
+</div>
+<div class="quadro">
+  <div class="rolagem"><table id="ttodas">
+    <thead><tr><th>Quando</th><th>Live</th><th>Tempo</th><th class="num">Valor</th>
+    <th>Doador</th><th>Mensagem</th><th>Recorrência</th></tr></thead><tbody></tbody>
+  </table></div>
+  <div class="pag">
+    <div class="info" id="info"></div>
+    <div class="paginas" id="paginas"></div>
+  </div>
+</div>
+
+<footer>
+  O total é o que apareceu na tela como alerta durante a transmissão. Doação que
+  não gerou alerta não entra na conta. Os nomes são os apelidos digitados pelos
+  próprios doadores no formulário.
+</footer>
+
+</main>
+<script>
+"use strict";
+const POR_PAGINA = 25;
+const RECARGA_MS = 30000;
+
+let dados = [], pagina = 1, desc = true, filtro = "";
+
+/* ------------------------------------------------------------------ CSV */
+// Parser proprio: o arquivo usa ";" como separador e a mensagem do doador pode
+// conter ";" e aspas, entao split(";") quebraria a linha no lugar errado.
+function parseCSV(texto, sep = ";") {
+  texto = texto.replace(/^﻿/, "");           // BOM que o Excel exige
+  const linhas = [];
+  let campo = "", linha = [], aspas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (aspas) {
+      if (c === '"') {
+        if (texto[i + 1] === '"') { campo += '"'; i++; }
+        else aspas = false;
+      } else campo += c;
+    } else if (c === '"') aspas = true;
+    else if (c === sep) { linha.push(campo); campo = ""; }
+    else if (c === "\n") { linha.push(campo); linhas.push(linha); linha = []; campo = ""; }
+    else if (c !== "\r") campo += c;
+  }
+  if (campo !== "" || linha.length) { linha.push(campo); linhas.push(linha); }
+  if (!linhas.length) return [];
+  const cab = linhas.shift().map(s => s.trim());
+  return linhas.filter(l => l.length > 1).map(l => {
+    const o = {};
+    cab.forEach((k, i) => o[k] = (l[i] ?? "").trim());
+    return o;
+  });
+}
+
+const num = s => parseFloat(String(s || "0").replace(/\./g, "").replace(",", ".")) || 0;
+const brl = v => "R$ " + v.toLocaleString("pt-BR", {minimumFractionDigits: 2,
+                                                   maximumFractionDigits: 2});
+const esc = s => String(s ?? "").replace(/[&<>"']/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ------------------------------------------------------------ tempo relativo */
+function haQuanto(seg) {
+  if (!isFinite(seg)) return "—";
+  if (seg < 0) seg = 0;
+  if (seg < 60) return `há ${Math.round(seg)} segundo${Math.round(seg) === 1 ? "" : "s"}`;
+  const m = Math.floor(seg / 60);
+  if (m < 60) return `há ${m} minuto${m === 1 ? "" : "s"}`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `há ${h} hora${h === 1 ? "" : "s"}`;
+  const d = Math.floor(h / 24);
+  return `há ${d} dia${d === 1 ? "" : "s"}`;
+}
+
+/* ------------------------------------------------------------------ dados */
+async function carregar() {
+  try {
+    const r = await fetch("doacoes.csv", {cache: "no-store"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    dados = parseCSV(await r.text()).map(l => ({
+      quando: l.quando || "", video: l.video || "", tempo: l.tempo || "",
+      valor: num(l.valor), doador: l.doador || "?", mensagem: l.mensagem || "",
+      repetido: (l.repetido || "nao").toLowerCase(),
+      score: num(l.score), n_doador: parseInt(l.n_doador || "1", 10),
+      identidade: l.identidade || ""
+    }));
+    document.getElementById("erro").style.display = "none";
+    desenhar();
+  } catch (e) {
+    // fetch de arquivo local e bloqueado quando a pagina abre via file://
+    const local = location.protocol === "file:";
+    document.getElementById("erro").style.display = "";
+    document.getElementById("erro").innerHTML = local
+      ? "Esta página lê <code>doacoes.csv</code> por <code>fetch</code>, que o "
+        + "navegador bloqueia em <code>file://</code>. Sirva a pasta por HTTP: "
+        + "<code>python -m http.server -d publico 8080</code> e abra "
+        + "<code>http://localhost:8080</code>. Publicada em Pages funciona direto."
+      : "Não consegui ler <code>doacoes.csv</code>: " + esc(e.message);
+  }
+}
+
+async function bater() {
+  const el = document.getElementById("pulso");
+  const alvo = document.getElementById("hb");
+  const q = document.getElementById("hbq");
+  try {
+    const r = await fetch("heartbeat.json", {cache: "no-store"});
+    if (!r.ok) throw new Error();
+    const hb = await r.json();
+    const seg = (Date.now() / 1000) - hb.epoch;
+    // Os limiares saem da cadencia do proprio agente, nao de numeros fixos:
+    // com batida a cada 5 min, "alerta acima de 5 min" acenderia pouco antes
+    // de toda batida. Duas batidas perdidas = atraso; seis = parou.
+    const iv = Math.max(60, hb.intervalo || 120);
+    alvo.textContent = haQuanto(seg);
+    q.textContent = hb.ts ? "(" + hb.ts.replace("T", " ").slice(0, 19) + ")" : "";
+    el.className = "pulso " + (seg < iv * 2.5 ? "vivo" : seg < iv * 6 ? "atraso" : "morto");
+    el.title = seg < iv * 2.5 ? "o monitor está rodando"
+      : seg < iv * 6 ? "sem sinal ha algumas batidas"
+      : "o monitor parece parado";
+  } catch {
+    alvo.textContent = "sem sinal";
+    q.textContent = "";
+    el.className = "pulso morto";
+  }
+}
+
+/* --------------------------------------------------------------- desenho */
+function desenhar() {
+  const agora = Date.now();
+  const dt = l => l.quando ? new Date(l.quando.replace(" ", "T")).getTime() : NaN;
+  const dentro = h => dados.filter(l => { const t = dt(l); return isFinite(t) && agora - t <= h * 3600e3; });
+
+  const tot = dados.reduce((s, l) => s + l.valor, 0);
+  const d1 = dentro(24), d7 = dentro(24 * 7);
+  const hoje = dados.filter(l => l.quando.slice(0, 10) === new Date().toISOString().slice(0, 10));
+
+  const ids = new Set(dados.map(l => l.identidade || l.doador));
+  const decid = dados.filter(l => l.repetido !== "indeterminado");
+  const reps = dados.filter(l => l.repetido === "sim");
+  const pRep = decid.length ? reps.length / decid.length * 100 : 0;
+
+  document.getElementById("sub").textContent =
+    `${dados.length} lançamentos · ${ids.size} doadores`;
+
+  const tile = (k, v, n) => `<div class="tile"><div class="k">${esc(k)}</div>
+    <div class="v">${esc(v)}</div>${n ? `<div class="n">${esc(n)}</div>` : ""}</div>`;
+  document.getElementById("tiles").innerHTML =
+      tile("Total", brl(tot), dados.length + " doações")
+    + tile("Hoje", brl(hoje.reduce((s, l) => s + l.valor, 0)), hoje.length + " doações")
+    + tile("Últimas 24 h", brl(d1.reduce((s, l) => s + l.valor, 0)), d1.length + " doações")
+    + tile("Últimos 7 dias", brl(d7.reduce((s, l) => s + l.valor, 0)), d7.length + " doações")
+    + tile("Ticket médio", dados.length ? brl(tot / dados.length) : "—")
+    + tile("Repetidas", pRep.toFixed(0) + "%", `${reps.length}/${decid.length} decidíveis`);
+
+  // ---------------------------------------------------------------- por dia
+  const dias = {};
+  for (const l of dados) {
+    const d = l.quando.slice(0, 10) || "sem data";
+    (dias[d] ||= {n: 0, tot: 0, rep: 0, ids: new Set()});
+    dias[d].n++; dias[d].tot += l.valor;
+    if (l.repetido === "sim") dias[d].rep++;
+    dias[d].ids.add(l.identidade || l.doador);
+  }
+  const ord = Object.entries(dias).sort((a, b) => b[0].localeCompare(a[0]));
+  const maxd = Math.max(1, ...ord.map(([, v]) => v.tot));
+  document.querySelector("#tdias tbody").innerHTML = ord.length ? ord.map(([d, v]) => `
+    <tr><td>${esc(d.split("-").reverse().join("/"))}</td>
+    <td class="num">${v.n}</td><td class="num">${v.rep}</td>
+    <td class="num">${v.ids.size}</td><td class="num">${esc(brl(v.tot))}</td>
+    <td class="num">${esc(brl(v.tot / v.n))}</td>
+    <td><div class="barra" style="width:${(v.tot / maxd * 100).toFixed(0)}%"></div></td></tr>`
+  ).join("") : `<tr><td colspan="7" class="vazio">sem lançamentos</td></tr>`;
+
+  desenharTabela();
+}
+
+function filtradas() {
+  const f = filtro.trim().toLowerCase();
+  let l = f ? dados.filter(d => (d.doador + " " + d.mensagem).toLowerCase().includes(f))
+            : dados.slice();
+  l.sort((a, b) => (a.quando || "").localeCompare(b.quando || ""));
+  if (desc) l.reverse();
+  return l;
+}
+
+function desenharTabela() {
+  const todas = filtradas();
+  const paginas = Math.max(1, Math.ceil(todas.length / POR_PAGINA));
+  pagina = Math.min(pagina, paginas);
+  const ini = (pagina - 1) * POR_PAGINA;
+  const fatia = todas.slice(ini, ini + POR_PAGINA);
+
+  const selo = l => l.repetido === "indeterminado"
+    ? `<span class="selo s-ind" title="nome genérico: não dá para saber se é a mesma pessoa">anônimo</span>`
+    : l.repetido === "sim"
+      ? `<span class="selo s-sim" title="semelhança x distintividade do nome">${l.n_doador}ª · ${l.score.toFixed(0)}%</span>`
+      : `<span class="selo s-nao">novo</span>`;
+
+  document.querySelector("#ttodas tbody").innerHTML = fatia.length ? fatia.map(l => `
+    <tr><td>${esc(l.quando.replace("T", " ") || "—")}</td>
+    <td>${esc(l.video)}</td><td class="num">${esc(l.tempo)}</td>
+    <td class="num">${esc(brl(l.valor))}</td><td>${esc(l.doador)}</td>
+    ${l.mensagem ? `<td class="msg" title="${esc(l.mensagem)}">${esc(l.mensagem)}</td>`
+                 : `<td class="vazio">—</td>`}
+    <td>${selo(l)}</td></tr>`).join("")
+    : `<tr><td colspan="7" class="vazio">nada encontrado</td></tr>`;
+
+  document.getElementById("info").textContent = todas.length
+    ? `${ini + 1}–${Math.min(ini + POR_PAGINA, todas.length)} de ${todas.length}`
+    : "0 de 0";
+
+  // janela de paginas em volta da atual, para nao virar uma regua de 200 botoes
+  const alvo = document.getElementById("paginas");
+  alvo.innerHTML = "";
+  const bt = (txt, p, cls, on = true) => {
+    const b = document.createElement("button");
+    b.textContent = txt;
+    if (cls) b.className = cls;
+    b.disabled = !on;
+    if (on) b.onclick = () => { pagina = p; desenharTabela();
+                                window.scrollTo({top: document.getElementById("ttodas").offsetTop - 80,
+                                                 behavior: "smooth"}); };
+    alvo.appendChild(b);
+  };
+  bt("‹", pagina - 1, "", pagina > 1);
+  const de = Math.max(1, pagina - 2), ate = Math.min(paginas, pagina + 2);
+  if (de > 1) bt("1", 1);
+  if (de > 2) alvo.insertAdjacentHTML("beforeend", `<span class="info">…</span>`);
+  for (let p = de; p <= ate; p++) bt(String(p), p, p === pagina ? "atual" : "");
+  if (ate < paginas - 1) alvo.insertAdjacentHTML("beforeend", `<span class="info">…</span>`);
+  if (ate < paginas) bt(String(paginas), paginas);
+  bt("›", pagina + 1, "", pagina < paginas);
+}
+
+/* ------------------------------------------------------------------ eventos */
+document.getElementById("busca").addEventListener("input", e => {
+  filtro = e.target.value; pagina = 1; desenharTabela();
+});
+document.getElementById("ordem").addEventListener("click", e => {
+  desc = !desc;
+  e.target.textContent = desc ? "Mais recentes primeiro" : "Mais antigas primeiro";
+  pagina = 1; desenharTabela();
+});
+
+carregar(); bater();
+setInterval(bater, 15000);          // o pulso e o que mais envelhece na tela
+setInterval(carregar, RECARGA_MS);
+</script>
+</body>
+</html>
