@@ -50,6 +50,7 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 }
 
 /* ------------------------------------------------------------------ frases */
+.titulo-frase{margin-top:1.75rem}
 .frase{margin:.85rem 0 1.6rem;padding:.85rem 1.1rem;border:1px dashed var(--line);
   border-radius:12px;background:var(--card);color:var(--mut);font-size:.95rem;
   min-height:3.1rem;display:flex;align-items:center;gap:.6rem}
@@ -180,7 +181,10 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
   </div>
 </header>
 
-<div class="frase" id="frase"><span id="frase-txt"></span></div>
+<section id="bloco-frases">
+  <h2 class="titulo-frase">Se um javali falasse, ele falaria...</h2>
+  <div class="frase" id="frase"><span id="frase-txt"></span></div>
+</section>
 
 <div id="erro" style="display:none" class="aviso"></div>
 
@@ -515,8 +519,9 @@ document.getElementById("corrida")
 
 (async () => {
   const ms = await carregarFrases();
-  // sem frases, some a caixa em vez de deixar um retangulo vazio na pagina
-  if (!frases.length) { document.getElementById("frase").style.display = "none"; return; }
+  // sem frases, some o bloco inteiro (titulo junto) em vez de deixar um
+  // retangulo vazio embaixo de um titulo que nao anuncia nada
+  if (!frases.length) { document.getElementById("bloco-frases").style.display = "none"; return; }
   ultima = sortear();
   document.getElementById("frase-txt").textContent = frases[ultima] || "";
   timerFrases = setInterval(trocarFrase, ms);
