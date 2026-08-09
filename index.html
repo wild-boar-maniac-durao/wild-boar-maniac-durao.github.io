@@ -28,7 +28,27 @@ main{max-width:66rem;margin:0 auto}
 
 /* ---------------------------------------------------------------- cabecalho */
 header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:.5rem}
-.mascote{width:104px;height:auto;color:var(--acc);flex:none}
+.mascote{width:104px;height:auto;color:var(--acc);flex:none;
+  transform-origin:50% 82%;
+  /* steps() de proposito: o javali anda aos trancos, sem interpolacao */
+  animation:javali-anda 3.2s steps(3,end) infinite}
+@keyframes javali-anda{
+  0%   {transform:translate(0,0)       rotate(0deg)   scaleX(1)}
+  8%   {transform:translate(8px,-8px)  rotate(-6deg)  scaleX(1)}
+  16%  {transform:translate(17px,3px)  rotate(5deg)   scaleX(1)}
+  24%  {transform:translate(24px,-10px)rotate(-7deg)  scaleX(1)}
+  32%  {transform:translate(31px,2px)  rotate(6deg)   scaleX(1)}
+  40%  {transform:translate(33px,-5px) rotate(-2deg)  scaleX(1)}
+  47%  {transform:translate(32px,4px)  rotate(11deg)  scaleX(-1)}
+  55%  {transform:translate(25px,-9px) rotate(-5deg)  scaleX(-1)}
+  63%  {transform:translate(18px,4px)  rotate(7deg)   scaleX(-1)}
+  71%  {transform:translate(10px,-10px)rotate(-6deg)  scaleX(-1)}
+  79%  {transform:translate(3px,3px)   rotate(8deg)   scaleX(-1)}
+  87%  {transform:translate(-2px,-6px) rotate(-9deg)  scaleX(-1)}
+  94%  {transform:translate(1px,5px)   rotate(4deg)   scaleX(1)}
+  100% {transform:translate(0,0)       rotate(0deg)   scaleX(1)}
+}
+@media (prefers-reduced-motion:reduce){.mascote{animation:none}}
 .titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
 .titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
 
@@ -156,7 +176,7 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
 </div>
 <div class="quadro">
   <div class="rolagem"><table id="ttodas">
-    <thead><tr><th>Quando</th><th>Live</th><th>Tempo</th><th class="num">Valor</th>
+    <thead><tr><th>Quando</th><th class="num">Valor</th>
     <th>Doador</th><th>Mensagem</th><th>Recorrência</th></tr></thead><tbody></tbody>
   </table></div>
   <div class="pag">
@@ -164,12 +184,6 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
     <div class="paginas" id="paginas"></div>
   </div>
 </div>
-
-<footer>
-  O total é o que apareceu na tela como alerta durante a transmissão. Doação que
-  não gerou alerta não entra na conta. Os nomes são os apelidos digitados pelos
-  próprios doadores no formulário.
-</footer>
 
 </main>
 <script>
@@ -354,12 +368,11 @@ function desenharTabela() {
 
   document.querySelector("#ttodas tbody").innerHTML = fatia.length ? fatia.map(l => `
     <tr><td>${esc(l.quando.replace("T", " ") || "—")}</td>
-    <td>${esc(l.video)}</td><td class="num">${esc(l.tempo)}</td>
     <td class="num">${esc(brl(l.valor))}</td><td>${esc(l.doador)}</td>
     ${l.mensagem ? `<td class="msg" title="${esc(l.mensagem)}">${esc(l.mensagem)}</td>`
                  : `<td class="vazio">—</td>`}
     <td>${selo(l)}</td></tr>`).join("")
-    : `<tr><td colspan="7" class="vazio">nada encontrado</td></tr>`;
+    : `<tr><td colspan="5" class="vazio">nada encontrado</td></tr>`;
 
   document.getElementById("info").textContent = todas.length
     ? `${ini + 1}–${Math.min(ini + POR_PAGINA, todas.length)} de ${todas.length}`
