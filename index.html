@@ -666,61 +666,63 @@ function javaliAndarilho(nome) {
   return { wrap, flip, texto: t };
 }
 
+const LARG_ANDARILHO = 130;
+let bichosRodape = [];
+
+// O passo e separado do relogio de proposito: assim da para exercitar o
+// movimento com tempo sintetico, sem depender do rAF (que fica parado em aba
+// de fundo e em navegador que nao esta compondo quadros).
+function passoRodape(agora, dt) {
+  const limite = Math.max(0, innerWidth - LARG_ANDARILHO);
+  for (const b of bichosRodape) {
+    if (agora >= b.proximaDecisao) {
+      const d = Math.random();          // para, anda, ou muda de ideia
+      b.parado = d < 0.25;
+      if (!b.parado && d > 0.7) b.dir *= -1;
+      if (!b.parado) b.vel = 22 + Math.random() * 18;   // passo, nao corrida
+      b.proximaDecisao = agora + 1200 + Math.random() * 3500;
+      b.wrap.classList.toggle("parado", b.parado);
+    }
+    if (!b.parado) {
+      b.x += b.dir * b.vel * dt;
+      if (b.x <= 0) { b.x = 0; b.dir = 1; }
+      if (b.x >= limite) { b.x = limite; b.dir = -1; }
+    }
+    b.wrap.style.transform = `translateX(${b.x.toFixed(1)}px)`;
+    // o corpo vira, mas a tatuagem tem que continuar legivel: sem este
+    // contra-espelhamento o nome sai escrito de tras para frente
+    if (b.dir < 0) {
+      b.flip.style.transform = "scaleX(-1)";
+      b.texto.setAttribute("transform", "translate(284 0) scale(-1 1)");
+    } else {
+      b.flip.style.transform = "";
+      b.texto.removeAttribute("transform");
+    }
+  }
+}
+
 function passearNoRodape() {
   const palco = document.createElement("div");
   palco.id = "rodape-javalis";
   document.body.appendChild(palco);
 
-  const bichos = ["Roberto", "Lucas Matheus"].map((nome, i) => {
+  bichosRodape = ["Roberto", "Lucas Matheus"].map((nome, i) => {
     const j = javaliAndarilho(nome);
-    const larg = 130;
-    j.wrap.style.width = larg + "px";
+    j.wrap.style.width = LARG_ANDARILHO + "px";
     palco.appendChild(j.wrap);
-    return {
-      ...j, larg,
-      x: innerWidth * (i ? 0.65 : 0.2),
-      dir: i ? -1 : 1,
-      vel: 22 + Math.random() * 18,     // px por segundo: passo, nao corrida
-      proximaDecisao: 0,
-      parado: false,
-    };
+    return { ...j, x: innerWidth * (i ? 0.65 : 0.2), dir: i ? -1 : 1,
+             vel: 22 + Math.random() * 18, proximaDecisao: 0, parado: false };
   });
 
   let antes = performance.now();
-  function quadro(agora) {
-    const dt = Math.min((agora - antes) / 1000, 0.1);   // aba em segundo plano
-    antes = agora;                                      // devolve dt gigante
-    const limite = innerWidth - 130;
-
-    for (const b of bichos) {
-      if (agora >= b.proximaDecisao) {
-        // para, anda, ou muda de ideia sobre o lado
-        const d = Math.random();
-        b.parado = d < 0.25;
-        if (!b.parado && d > 0.7) b.dir *= -1;
-        if (!b.parado) b.vel = 22 + Math.random() * 18;
-        b.proximaDecisao = agora + 1200 + Math.random() * 3500;
-        b.wrap.classList.toggle("parado", b.parado);
-      }
-      if (!b.parado) {
-        b.x += b.dir * b.vel * dt;
-        if (b.x <= 0) { b.x = 0; b.dir = 1; }
-        if (b.x >= limite) { b.x = limite; b.dir = -1; }
-      }
-      b.wrap.style.transform = `translateX(${b.x.toFixed(1)}px)`;
-      // o corpo vira, mas a tatuagem tem que continuar legivel: sem este
-      // contra-espelhamento o nome sai escrito de tras para frente
-      if (b.dir < 0) {
-        b.flip.style.transform = "scaleX(-1)";
-        b.texto.setAttribute("transform", "translate(284 0) scale(-1 1)");
-      } else {
-        b.flip.style.transform = "";
-        b.texto.removeAttribute("transform");
-      }
-    }
+  (function quadro(agora) {
+    // teto no dt: aba em segundo plano volta com um salto de minutos, e sem
+    // o teto o javali teleporta de uma ponta a outra ao reabrir
+    const dt = Math.min((agora - antes) / 1000, 0.1);
+    antes = agora;
+    passoRodape(agora, dt);
     requestAnimationFrame(quadro);
-  }
-  requestAnimationFrame(quadro);
+  })(performance.now());
 }
 
 (async () => {
