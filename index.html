@@ -713,15 +713,19 @@ function passoRodape(agora, dt) {
 }
 
 function passearNoRodape() {
+  const fim = document.getElementById("fim-da-pagina");
+  if (!fim) return;
   const palco = document.createElement("div");
   palco.id = "rodape-javalis";
-  document.body.appendChild(palco);
+  fim.appendChild(palco);
+  palcoRodape = palco;
 
+  const larg = palco.clientWidth || innerWidth;
   bichosRodape = ["Roberto", "Lucas Matheus"].map((nome, i) => {
     const j = javaliAndarilho(nome);
     j.wrap.style.width = LARG_ANDARILHO + "px";
     palco.appendChild(j.wrap);
-    return { ...j, x: innerWidth * (i ? 0.65 : 0.2), dir: i ? -1 : 1,
+    return { ...j, x: larg * (i ? 0.6 : 0.15), dir: i ? -1 : 1,
              vel: 22 + Math.random() * 18, proximaDecisao: 0, parado: false };
   });
 
