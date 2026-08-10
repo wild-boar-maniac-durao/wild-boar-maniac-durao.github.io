@@ -72,6 +72,28 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   96%  {opacity:1;transform:translate(112vw,-9px)   rotate(-6deg)}
   100% {opacity:0;transform:translate(125vw,0)      rotate(0deg)}
 }
+/* ------------------------------------------------- modo Santa Catarina */
+/* Tres niveis aninhados de proposito: um so elemento nao consegue animar
+   X e Y ao mesmo tempo, porque a segunda animacao sobrescreve o transform
+   da primeira. Wrap anda na horizontal, flip vira o bicho, svg pula. */
+#javalada{position:fixed;inset:0;z-index:9999;background:var(--bg);overflow:hidden}
+#javalada .wrap{position:absolute;left:0;will-change:transform;
+  animation:sc-atravessa linear infinite}
+#javalada .flip{display:block}
+#javalada svg{display:block;width:100%;height:auto;color:var(--acc);
+  will-change:transform;animation:sc-pula steps(4,end) infinite}
+@keyframes sc-atravessa{
+  from{transform:translateX(-25vw)}
+  to  {transform:translateX(125vw)}
+}
+@keyframes sc-pula{
+  0%  {transform:translateY(0)     rotate(0deg)}
+  25% {transform:translateY(-42px) rotate(-11deg)}
+  50% {transform:translateY(6px)   rotate(9deg)}
+  75% {transform:translateY(-24px) rotate(-6deg)}
+  100%{transform:translateY(0)     rotate(0deg)}
+}
+
 .titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
 .titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
 
