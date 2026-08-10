@@ -253,6 +253,8 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
   </div>
 </div>
 
+<footer id="tico">IN MEMORY OF LITTLE TICO</footer>
+
 <svg id="corrida" viewBox="0 0 240 160" aria-hidden="true">
   <g fill="none" stroke="currentColor" stroke-width="3.4"
      stroke-linejoin="round" stroke-linecap="round">
@@ -631,8 +633,99 @@ function soltarJavalada(n = SC_JAVALIS) {
   if (m) m.style.display = "none";
 }
 
+/* -------------------------------------- os dois javalis que passeiam embaixo */
+// Passeio aleatorio de verdade, nao animacao em laco: eles andam devagar,
+// param, mudam de ideia e voltam. Nao da para fazer isso com @keyframes,
+// porque keyframe e sempre o mesmo caminho - entao a posicao vem do rAF e a
+// CSS cuida so do passo (o balanco do corpo).
+function javaliAndarilho(nome) {
+  const molde = document.getElementById("corrida");
+  const wrap = document.createElement("div");
+  wrap.className = "andarilho";
+  const flip = document.createElement("span");
+  flip.className = "flip";
+
+  const svg = molde.cloneNode(true);
+  svg.removeAttribute("id");
+  svg.classList.remove("correndo");
+  svg.style.opacity = "1";
+  svg.style.animation = "";
+
+  // a tatuagem fica no lombo, dentro do viewBox 240x160 do bicho
+  const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  t.setAttribute("class", "tatuagem");
+  t.setAttribute("x", "142");
+  t.setAttribute("y", "92");
+  t.setAttribute("text-anchor", "middle");
+  t.setAttribute("font-size", nome.length > 8 ? "17" : "22");
+  t.textContent = nome;
+  svg.appendChild(t);
+
+  flip.appendChild(svg);
+  wrap.appendChild(flip);
+  return { wrap, flip, texto: t };
+}
+
+function passearNoRodape() {
+  const palco = document.createElement("div");
+  palco.id = "rodape-javalis";
+  document.body.appendChild(palco);
+
+  const bichos = ["Roberto", "Lucas Matheus"].map((nome, i) => {
+    const j = javaliAndarilho(nome);
+    const larg = 130;
+    j.wrap.style.width = larg + "px";
+    palco.appendChild(j.wrap);
+    return {
+      ...j, larg,
+      x: innerWidth * (i ? 0.65 : 0.2),
+      dir: i ? -1 : 1,
+      vel: 22 + Math.random() * 18,     // px por segundo: passo, nao corrida
+      proximaDecisao: 0,
+      parado: false,
+    };
+  });
+
+  let antes = performance.now();
+  function quadro(agora) {
+    const dt = Math.min((agora - antes) / 1000, 0.1);   // aba em segundo plano
+    antes = agora;                                      // devolve dt gigante
+    const limite = innerWidth - 130;
+
+    for (const b of bichos) {
+      if (agora >= b.proximaDecisao) {
+        // para, anda, ou muda de ideia sobre o lado
+        const d = Math.random();
+        b.parado = d < 0.25;
+        if (!b.parado && d > 0.7) b.dir *= -1;
+        if (!b.parado) b.vel = 22 + Math.random() * 18;
+        b.proximaDecisao = agora + 1200 + Math.random() * 3500;
+        b.wrap.classList.toggle("parado", b.parado);
+      }
+      if (!b.parado) {
+        b.x += b.dir * b.vel * dt;
+        if (b.x <= 0) { b.x = 0; b.dir = 1; }
+        if (b.x >= limite) { b.x = limite; b.dir = -1; }
+      }
+      b.wrap.style.transform = `translateX(${b.x.toFixed(1)}px)`;
+      // o corpo vira, mas a tatuagem tem que continuar legivel: sem este
+      // contra-espelhamento o nome sai escrito de tras para frente
+      if (b.dir < 0) {
+        b.flip.style.transform = "scaleX(-1)";
+        b.texto.setAttribute("transform", "translate(284 0) scale(-1 1)");
+      } else {
+        b.flip.style.transform = "";
+        b.texto.removeAttribute("transform");
+      }
+    }
+    requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+}
+
 (async () => {
-  if (await ehSantaCatarina()) soltarJavalada();
+  if (await ehSantaCatarina()) { soltarJavalada(); return; }
+  passearNoRodape();
 })();
 
 carregar(); bater();
