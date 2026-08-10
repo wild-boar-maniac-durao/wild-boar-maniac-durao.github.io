@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Javali de frente">
+  <title>Javali</title>
+  <style>
+    /* Favicon renderiza a 16px: silhueta cheia com furos, nao traco fino,
+       senao vira uma mancha. Os furos sao mascara de verdade (transparentes),
+       para funcionar tanto em aba clara quanto escura. */
+    :root { --pelo: #8a5a2b; --presa: #e8dcc8; }
+    @media (prefers-color-scheme: dark) {
+      :root { --pelo: #d69a5c; --presa: #f5ead8; }
+    }
+  </style>
+
+  <mask id="furos">
+    <rect width="64" height="64" fill="#fff"/>
+    <!-- olhos -->
+    <ellipse cx="22" cy="26" rx="3.4" ry="3.9" fill="#000"/>
+    <ellipse cx="42" cy="26" rx="3.4" ry="3.9" fill="#000"/>
+    <!-- contorno do focinho, para ele nao sumir dentro da cabeca -->
+    <ellipse cx="32" cy="44" rx="11.5" ry="8.5" fill="none" stroke="#000" stroke-width="2.4"/>
+    <!-- narinas -->
+    <ellipse cx="27.5" cy="44" rx="2.5" ry="3.2" fill="#000"/>
+    <ellipse cx="36.5" cy="44" rx="2.5" ry="3.2" fill="#000"/>
+  </mask>
+
+  <g fill="var(--pelo, #8a5a2b)">
+    <!-- orelhas -->
+    <path d="M15 21 L8 4 L28 13 Z"/>
+    <path d="M49 21 L56 4 L36 13 Z"/>
+    <!-- cabeca, com os furos aplicados -->
+    <path mask="url(#furos)"
+          d="M32 8
+             c13.5 0 21.5 9 21.5 20.5
+             0 6.5-2 12-5.5 16.2
+             -2.4 3-5.6 5.2-9 6.3
+             -2.2 0.7-4.7 1-7 1
+             -2.3 0-4.8-0.3-7-1
+             -3.4-1.1-6.6-3.3-9-6.3
+             -3.5-4.2-5.5-9.7-5.5-16.2
+             C10.5 17 18.5 8 32 8 Z"/>
+  </g>
+
+  <!-- presas: por cima e em cor propria, senao somem na silhueta -->
+  <g fill="var(--presa, #e8dcc8)" stroke="var(--pelo, #8a5a2b)" stroke-width="1.6"
+     stroke-linejoin="round">
+    <path d="M20.5 50 q-6.5 -4.5 -5.5 -14 q4.5 6.5 8.5 10 z"/>
+    <path d="M43.5 50 q6.5 -4.5 5.5 -14 q-4.5 6.5 -8.5 10 z"/>
+  </g>
+</svg>
