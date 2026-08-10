@@ -94,6 +94,24 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   100%{transform:translateY(0)     rotate(0deg)}
 }
 
+/* ------------------------------------ os dois javalis do rodape da tela */
+#rodape-javalis{position:fixed;left:0;right:0;bottom:0;height:150px;
+  pointer-events:none;z-index:50;overflow:hidden}
+#rodape-javalis .andarilho{position:absolute;bottom:0;color:var(--acc);
+  will-change:transform}
+#rodape-javalis .flip{display:block}
+#rodape-javalis svg{display:block;width:100%;height:auto;
+  animation:javali-passo .62s steps(3,end) infinite}
+#rodape-javalis .parado svg{animation-play-state:paused}
+@keyframes javali-passo{
+  0%  {transform:translateY(0)    rotate(0deg)}
+  33% {transform:translateY(-6px) rotate(-3deg)}
+  66% {transform:translateY(3px)  rotate(3deg)}
+  100%{transform:translateY(0)    rotate(0deg)}
+}
+.tatuagem{fill:currentColor;font-family:ui-sans-serif,system-ui,sans-serif;
+  font-weight:700;opacity:.9;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+
 .titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
 .titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
 
@@ -547,6 +565,74 @@ document.getElementById("corrida")
   ultima = sortear();
   document.getElementById("frase-txt").textContent = frases[ultima] || "";
   timerFrases = setInterval(trocarFrase, ms);
+})();
+
+/* --------------------------------------------------- modo Santa Catarina */
+// A pagina e estatica no GitHub Pages, entao ela nao sabe de onde vem o
+// visitante: quem responde isso e um servico externo de geo-IP. Duas coisas
+// a saber -- o IP do visitante vai para esse terceiro, e geo-IP no Brasil
+// erra muito no nivel de estado (celular cai no estado do concentrador da
+// operadora). Se a consulta falhar, cai na pagina normal, nao na javalada.
+const SC_JAVALIS = 30;
+
+async function ehSantaCatarina() {
+  const q = new URLSearchParams(location.search);
+  if (q.get("sc") === "1") return true;      // ?sc=1 forca, para conferir
+  if (q.get("sc") === "0") return false;     // ?sc=0 desliga
+
+  for (const [url, campo] of [["https://ipwho.is/", "region_code"],
+                              ["https://ipapi.co/json/", "region_code"]]) {
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      if (!r.ok) continue;
+      const j = await r.json();
+      if (j && j[campo]) return String(j[campo]).toUpperCase() === "SC";
+    } catch (e) { /* servico fora do ar ou bloqueado por extensao */ }
+  }
+  return false;
+}
+
+function soltarJavalada(n = SC_JAVALIS) {
+  const molde = document.getElementById("corrida");
+  if (!molde) return;
+  const palco = document.createElement("div");
+  palco.id = "javalada";
+
+  for (let i = 0; i < n; i++) {
+    const wrap = document.createElement("div");
+    wrap.className = "wrap";
+    const flip = document.createElement("span");
+    flip.className = "flip";
+
+    const svg = molde.cloneNode(true);
+    svg.removeAttribute("id");
+    svg.classList.remove("correndo");
+    svg.style.opacity = "1";
+
+    const largura = 70 + Math.random() * 120;          // px
+    const daDireita = Math.random() < 0.5;
+    wrap.style.top = (Math.random() * 92) + "%";
+    wrap.style.width = largura + "px";
+    wrap.style.animationDuration = (3 + Math.random() * 7).toFixed(2) + "s";
+    wrap.style.animationDelay = (-Math.random() * 10).toFixed(2) + "s";
+    if (daDireita) wrap.style.animationDirection = "reverse";
+    // vira o bicho para o lado em que ele esta indo
+    flip.style.transform = daDireita ? "scaleX(-1)" : "";
+    svg.style.animationDuration = (0.35 + Math.random() * 0.5).toFixed(2) + "s";
+    svg.style.animationDelay = (-Math.random() * 2).toFixed(2) + "s";
+
+    flip.appendChild(svg);
+    wrap.appendChild(flip);
+    palco.appendChild(wrap);
+  }
+
+  document.body.appendChild(palco);
+  const m = document.querySelector("main");
+  if (m) m.style.display = "none";
+}
+
+(async () => {
+  if (await ehSantaCatarina()) soltarJavalada();
 })();
 
 carregar(); bater();
