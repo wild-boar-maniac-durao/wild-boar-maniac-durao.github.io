@@ -95,8 +95,13 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 }
 
 /* ------------------------------------ os dois javalis do rodape da tela */
-#rodape-javalis{position:fixed;left:0;right:0;bottom:0;height:150px;
-  pointer-events:none;z-index:50;overflow:hidden}
+/* No fim do DOCUMENTO, nao da janela: com position:fixed eles acompanhavam
+   a rolagem e ficavam sempre na tela. Aqui a faixa fica na altura do rodape
+   e so aparece quando a pagina chega ao fim. */
+#fim-da-pagina{position:relative;min-height:170px;margin-top:3.5rem}
+#fim-da-pagina footer{position:relative;z-index:2;margin-top:0}
+#rodape-javalis{position:absolute;left:0;right:0;bottom:0;height:130px;
+  pointer-events:none;z-index:1;overflow:hidden}
 #rodape-javalis .andarilho{position:absolute;bottom:0;color:var(--acc);
   will-change:transform}
 #rodape-javalis .flip{display:block}
@@ -253,7 +258,9 @@ footer{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);
   </div>
 </div>
 
-<footer id="tico">IN MEMORY OF LITTLE TICO</footer>
+<div id="fim-da-pagina">
+  <footer id="tico">IN MEMORY OF LITTLE TICO</footer>
+</div>
 
 <svg id="corrida" viewBox="0 0 240 160" aria-hidden="true">
   <g fill="none" stroke="currentColor" stroke-width="3.4"
@@ -667,13 +674,17 @@ function javaliAndarilho(nome) {
 }
 
 const LARG_ANDARILHO = 130;
-let bichosRodape = [];
+let bichosRodape = [], palcoRodape = null;
 
 // O passo e separado do relogio de proposito: assim da para exercitar o
 // movimento com tempo sintetico, sem depender do rAF (que fica parado em aba
 // de fundo e em navegador que nao esta compondo quadros).
 function passoRodape(agora, dt) {
-  const limite = Math.max(0, innerWidth - LARG_ANDARILHO);
+  // limite e a largura da FAIXA, nao da janela: a faixa acompanha o <main>,
+  // que e centralizado e tem largura maxima, entao usar innerWidth deixaria
+  // os javalis passearem por fora dela
+  const larguraFaixa = palcoRodape ? palcoRodape.clientWidth : innerWidth;
+  const limite = Math.max(0, larguraFaixa - LARG_ANDARILHO);
   for (const b of bichosRodape) {
     if (agora >= b.proximaDecisao) {
       const d = Math.random();          // para, anda, ou muda de ideia
