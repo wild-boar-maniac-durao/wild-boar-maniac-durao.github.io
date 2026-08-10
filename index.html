@@ -27,11 +27,10 @@ body{margin:0;background:var(--bg);color:var(--fg);
   padding:2.5rem 1.25rem 5rem}
 main{max-width:66rem;margin:0 auto}
 
-/* ---------------------------------------------------------------- cabecalho */
 header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:.5rem}
 .mascote{width:104px;height:auto;color:var(--acc);flex:none;
   transform-origin:50% 82%;
-  /* steps() de proposito: o javali anda aos trancos, sem interpolacao */
+
   animation:javali-anda 3.2s steps(3,end) infinite}
 @keyframes javali-anda{
   0%   {transform:translate(0,0)       rotate(0deg)   scaleX(1)}
@@ -50,7 +49,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   100% {transform:translate(0,0)       rotate(0deg)   scaleX(1)}
 }
 
-/* ------------------------------------------------------------------ frases */
 .titulo-frase{margin-top:1.75rem}
 .frase{margin:.85rem 0 1.6rem;padding:.85rem 1.1rem;border:1px dashed var(--line);
   border-radius:12px;background:var(--card);color:var(--mut);font-size:.95rem;
@@ -58,7 +56,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 .frase span{transition:opacity .25s}
 .frase.trocando span{opacity:0}
 
-/* javali que atravessa a tela a cada 3 frases */
 #corrida{position:fixed;left:-170px;bottom:9%;width:130px;height:auto;
   color:var(--acc);pointer-events:none;z-index:60;opacity:0}
 #corrida.correndo{animation:javali-corre 2.8s steps(12,end) 1}
@@ -73,10 +70,7 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   96%  {opacity:1;transform:translate(112vw,-9px)   rotate(-6deg)}
   100% {opacity:0;transform:translate(125vw,0)      rotate(0deg)}
 }
-/* ------------------------------------------------- modo Santa Catarina */
-/* Tres niveis aninhados de proposito: um so elemento nao consegue animar
-   X e Y ao mesmo tempo, porque a segunda animacao sobrescreve o transform
-   da primeira. Wrap anda na horizontal, flip vira o bicho, svg pula. */
+
 #javalada{position:fixed;inset:0;z-index:9999;background:var(--bg);overflow:hidden}
 #javalada .wrap{position:absolute;left:0;will-change:transform;
   animation:sc-atravessa linear infinite}
@@ -95,10 +89,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
   100%{transform:translateY(0)     rotate(0deg)}
 }
 
-/* ------------------------------------ os dois javalis do rodape da tela */
-/* No fim do DOCUMENTO, nao da janela: com position:fixed eles acompanhavam
-   a rolagem e ficavam sempre na tela. Aqui a faixa fica na altura do rodape
-   e so aparece quando a pagina chega ao fim. */
 #fim-da-pagina{position:relative;min-height:170px;margin-top:3.5rem}
 #fim-da-pagina footer{position:relative;z-index:2;margin-top:0}
 #rodape-javalis{position:absolute;left:0;right:0;bottom:0;height:130px;
@@ -121,7 +111,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 .titulo h1{font-size:1.6rem;margin:0;letter-spacing:-.02em;font-weight:650}
 .titulo p{margin:.15rem 0 0;color:var(--mut);font-size:.9rem}
 
-/* ---------------------------------------------------------------- heartbeat */
 .pulso{display:inline-flex;align-items:center;gap:.55rem;margin-top:.6rem;
   padding:.4rem .75rem;border:1px solid var(--line);border-radius:999px;
   background:var(--card);font-size:.85rem;box-shadow:var(--shadow)}
@@ -136,7 +125,6 @@ header{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:
 .pulso b{font-weight:600}
 .pulso .quando{color:var(--mut)}
 
-/* ------------------------------------------------------------------ blocos */
 h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--mut);
   font-weight:650;margin:2.75rem 0 .75rem}
 .tiles{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
@@ -148,7 +136,6 @@ h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--mu
   font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .tile .n{font-size:.75rem;color:var(--mut);margin-top:.1rem}
 
-/* ------------------------------------------------------------------ tabelas */
 .quadro{background:var(--card);border:1px solid var(--line);border-radius:12px;
   overflow:hidden;box-shadow:var(--shadow)}
 .rolagem{overflow-x:auto}
@@ -167,7 +154,6 @@ td.vazio{color:var(--mut);opacity:.45}
 .s-sim{color:var(--acc)} .s-nao{color:var(--mut);opacity:.7} .s-ind{color:var(--warn)}
 .barra{height:.45rem;border-radius:3px;background:var(--acc);opacity:.7;min-width:2px}
 
-/* --------------------------------------------------------------- paginacao */
 .ferramentas{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem}
 input[type=search]{flex:1;min-width:11rem;padding:.45rem .7rem;border-radius:9px;
   border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:.88rem}
@@ -292,11 +278,8 @@ const RECARGA_MS = 30000;
 
 let dados = [], pagina = 1, desc = true, filtro = "";
 
-/* ------------------------------------------------------------------ CSV */
-// Parser proprio: o arquivo usa ";" como separador e a mensagem do doador pode
-// conter ";" e aspas, entao split(";") quebraria a linha no lugar errado.
 function parseCSV(texto, sep = ";") {
-  texto = texto.replace(/^﻿/, "");           // BOM que o Excel exige
+  texto = texto.replace(/^﻿/, "");
   const linhas = [];
   let campo = "", linha = [], aspas = false;
   for (let i = 0; i < texto.length; i++) {
@@ -327,7 +310,6 @@ const brl = v => "R$ " + v.toLocaleString("pt-BR", {minimumFractionDigits: 2,
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-/* ------------------------------------------------------------ tempo relativo */
 function haQuanto(seg) {
   if (!isFinite(seg)) return "—";
   if (seg < 0) seg = 0;
@@ -340,7 +322,6 @@ function haQuanto(seg) {
   return `há ${d} dia${d === 1 ? "" : "s"}`;
 }
 
-/* ------------------------------------------------------------------ dados */
 async function carregar() {
   try {
     const r = await fetch("doacoes.csv", {cache: "no-store"});
@@ -355,7 +336,7 @@ async function carregar() {
     document.getElementById("erro").style.display = "none";
     desenhar();
   } catch (e) {
-    // fetch de arquivo local e bloqueado quando a pagina abre via file://
+
     const local = location.protocol === "file:";
     document.getElementById("erro").style.display = "";
     document.getElementById("erro").innerHTML = local
@@ -376,9 +357,7 @@ async function bater() {
     if (!r.ok) throw new Error();
     const hb = await r.json();
     const seg = (Date.now() / 1000) - hb.epoch;
-    // Os limiares saem da cadencia do proprio agente, nao de numeros fixos:
-    // com batida a cada 5 min, "alerta acima de 5 min" acenderia pouco antes
-    // de toda batida. Duas batidas perdidas = atraso; seis = parou.
+
     const iv = Math.max(60, hb.intervalo || 120);
     alvo.textContent = haQuanto(seg);
     q.textContent = hb.ts ? "(" + hb.ts.replace("T", " ").slice(0, 19) + ")" : "";
@@ -393,7 +372,6 @@ async function bater() {
   }
 }
 
-/* --------------------------------------------------------------- desenho */
 function desenhar() {
   const agora = Date.now();
   const dt = l => l.quando ? new Date(l.quando.replace(" ", "T")).getTime() : NaN;
@@ -421,7 +399,6 @@ function desenhar() {
     + tile("Ticket médio", dados.length ? brl(tot / dados.length) : "—")
     + tile("Repetidas", pRep.toFixed(0) + "%", `${reps.length}/${decid.length} decidíveis`);
 
-  // ---------------------------------------------------------------- por dia
   const dias = {};
   for (const l of dados) {
     const d = l.quando.slice(0, 10) || "sem data";
@@ -477,7 +454,6 @@ function desenharTabela() {
     ? `${ini + 1}–${Math.min(ini + POR_PAGINA, todas.length)} de ${todas.length}`
     : "0 de 0";
 
-  // janela de paginas em volta da atual, para nao virar uma regua de 200 botoes
   const alvo = document.getElementById("paginas");
   alvo.innerHTML = "";
   const bt = (txt, p, cls, on = true) => {
@@ -500,7 +476,6 @@ function desenharTabela() {
   bt("›", pagina + 1, "", pagina < paginas);
 }
 
-/* ------------------------------------------------------------------ eventos */
 document.getElementById("busca").addEventListener("input", e => {
   filtro = e.target.value; pagina = 1; desenharTabela();
 });
@@ -510,35 +485,31 @@ document.getElementById("ordem").addEventListener("click", e => {
   pagina = 1; desenharTabela();
 });
 
-/* ------------------------------------------------------------------ frases */
-// Editavel em frases.json, sem mexer no HTML. A cada 3 trocas passa um javali.
 let frases = [], trocas = 0, ultima = -1, timerFrases = null;
 
 async function carregarFrases() {
   try {
     const r = await fetch("frases.json?t=" + Date.now(), { cache: "no-store" });
     if (!r.ok) throw new Error(r.status);
-    // Nao usar r.json(): ele assume UTF-8 e o arquivo e editado na mao, onde
-    // Bloco de Notas e PowerShell salvam em ANSI (windows-1252) sem avisar.
-    // Byte invalido em UTF-8 vira "�" e o acento aparece quebrado na tela.
+
     const buf = await r.arrayBuffer();
     let texto = new TextDecoder("utf-8").decode(buf);
     if (texto.includes("�")) texto = new TextDecoder("windows-1252").decode(buf);
     const j = JSON.parse(texto.replace(/^﻿/, ""));
-    // aceita {"frases":[...]} ou o array cru, para nao quebrar se editarem torto
+
     const lista = Array.isArray(j) ? j : j.frases;
     if (Array.isArray(lista) && lista.length) frases = lista.filter(f => String(f).trim());
     const seg = Number(Array.isArray(j) ? 0 : j.segundos);
     return seg > 0 ? seg * 1000 : 8000;
   } catch (e) {
-    // frases.json ausente ou torto nao pode derrubar o resto da pagina
+
     return 8000;
   }
 }
 
 function sortear() {
   if (frases.length < 2) return 0;
-  let i;                                     // nunca repetir a mesma seguida
+  let i;
   do { i = Math.floor(Math.random() * frases.length); } while (i === ultima);
   return i;
 }
@@ -559,36 +530,28 @@ function correr() {
   const j = document.getElementById("corrida");
   if (!j) return;
   j.classList.remove("correndo");
-  void j.offsetWidth;                        // reinicia a animacao
+  void j.offsetWidth;
   j.classList.add("correndo");
 }
 
-// sem isto a classe fica grudada para sempre e o estado do elemento mente
 document.getElementById("corrida")
   .addEventListener("animationend", e => e.target.classList.remove("correndo"));
 
 (async () => {
   const ms = await carregarFrases();
-  // sem frases, some o bloco inteiro (titulo junto) em vez de deixar um
-  // retangulo vazio embaixo de um titulo que nao anuncia nada
+
   if (!frases.length) { document.getElementById("bloco-frases").style.display = "none"; return; }
   ultima = sortear();
   document.getElementById("frase-txt").textContent = frases[ultima] || "";
   timerFrases = setInterval(trocarFrase, ms);
 })();
 
-/* --------------------------------------------------- modo Santa Catarina */
-// A pagina e estatica no GitHub Pages, entao ela nao sabe de onde vem o
-// visitante: quem responde isso e um servico externo de geo-IP. Duas coisas
-// a saber -- o IP do visitante vai para esse terceiro, e geo-IP no Brasil
-// erra muito no nivel de estado (celular cai no estado do concentrador da
-// operadora). Se a consulta falhar, cai na pagina normal, nao na javalada.
 const SC_JAVALIS = 30;
 
 async function ehSantaCatarina() {
   const q = new URLSearchParams(location.search);
-  if (q.get("sc") === "1") return true;      // ?sc=1 forca, para conferir
-  if (q.get("sc") === "0") return false;     // ?sc=0 desliga
+  if (q.get("sc") === "1") return true;
+  if (q.get("sc") === "0") return false;
 
   for (const [url, campo] of [["https://ipwho.is/", "region_code"],
                               ["https://ipapi.co/json/", "region_code"]]) {
@@ -597,7 +560,7 @@ async function ehSantaCatarina() {
       if (!r.ok) continue;
       const j = await r.json();
       if (j && j[campo]) return String(j[campo]).toUpperCase() === "SC";
-    } catch (e) { /* servico fora do ar ou bloqueado por extensao */ }
+    } catch (e) {  }
   }
   return false;
 }
@@ -619,14 +582,14 @@ function soltarJavalada(n = SC_JAVALIS) {
     svg.classList.remove("correndo");
     svg.style.opacity = "1";
 
-    const largura = 70 + Math.random() * 120;          // px
+    const largura = 70 + Math.random() * 120;
     const daDireita = Math.random() < 0.5;
     wrap.style.top = (Math.random() * 92) + "%";
     wrap.style.width = largura + "px";
     wrap.style.animationDuration = (3 + Math.random() * 7).toFixed(2) + "s";
     wrap.style.animationDelay = (-Math.random() * 10).toFixed(2) + "s";
     if (daDireita) wrap.style.animationDirection = "reverse";
-    // vira o bicho para o lado em que ele esta indo
+
     flip.style.transform = daDireita ? "scaleX(-1)" : "";
     svg.style.animationDuration = (0.35 + Math.random() * 0.5).toFixed(2) + "s";
     svg.style.animationDelay = (-Math.random() * 2).toFixed(2) + "s";
@@ -641,11 +604,6 @@ function soltarJavalada(n = SC_JAVALIS) {
   if (m) m.style.display = "none";
 }
 
-/* -------------------------------------- os dois javalis que passeiam embaixo */
-// Passeio aleatorio de verdade, nao animacao em laco: eles andam devagar,
-// param, mudam de ideia e voltam. Nao da para fazer isso com @keyframes,
-// porque keyframe e sempre o mesmo caminho - entao a posicao vem do rAF e a
-// CSS cuida so do passo (o balanco do corpo).
 function javaliAndarilho(nome) {
   const molde = document.getElementById("corrida");
   const wrap = document.createElement("div");
@@ -659,7 +617,6 @@ function javaliAndarilho(nome) {
   svg.style.opacity = "1";
   svg.style.animation = "";
 
-  // a tatuagem fica no lombo, dentro do viewBox 240x160 do bicho
   const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
   t.setAttribute("class", "tatuagem");
   t.setAttribute("x", "142");
@@ -677,21 +634,16 @@ function javaliAndarilho(nome) {
 const LARG_ANDARILHO = 130;
 let bichosRodape = [], palcoRodape = null;
 
-// O passo e separado do relogio de proposito: assim da para exercitar o
-// movimento com tempo sintetico, sem depender do rAF (que fica parado em aba
-// de fundo e em navegador que nao esta compondo quadros).
 function passoRodape(agora, dt) {
-  // limite e a largura da FAIXA, nao da janela: a faixa acompanha o <main>,
-  // que e centralizado e tem largura maxima, entao usar innerWidth deixaria
-  // os javalis passearem por fora dela
+
   const larguraFaixa = palcoRodape ? palcoRodape.clientWidth : innerWidth;
   const limite = Math.max(0, larguraFaixa - LARG_ANDARILHO);
   for (const b of bichosRodape) {
     if (agora >= b.proximaDecisao) {
-      const d = Math.random();          // para, anda, ou muda de ideia
+      const d = Math.random();
       b.parado = d < 0.25;
       if (!b.parado && d > 0.7) b.dir *= -1;
-      if (!b.parado) b.vel = 22 + Math.random() * 18;   // passo, nao corrida
+      if (!b.parado) b.vel = 22 + Math.random() * 18;
       b.proximaDecisao = agora + 1200 + Math.random() * 3500;
       b.wrap.classList.toggle("parado", b.parado);
     }
@@ -701,8 +653,7 @@ function passoRodape(agora, dt) {
       if (b.x >= limite) { b.x = limite; b.dir = -1; }
     }
     b.wrap.style.transform = `translateX(${b.x.toFixed(1)}px)`;
-    // o corpo vira, mas a tatuagem tem que continuar legivel: sem este
-    // contra-espelhamento o nome sai escrito de tras para frente
+
     if (b.dir < 0) {
       b.flip.style.transform = "scaleX(-1)";
       b.texto.setAttribute("transform", "translate(284 0) scale(-1 1)");
@@ -732,8 +683,7 @@ function passearNoRodape() {
 
   let antes = performance.now();
   (function quadro(agora) {
-    // teto no dt: aba em segundo plano volta com um salto de minutos, e sem
-    // o teto o javali teleporta de uma ponta a outra ao reabrir
+
     const dt = Math.min((agora - antes) / 1000, 0.1);
     antes = agora;
     passoRodape(agora, dt);
@@ -747,7 +697,7 @@ function passearNoRodape() {
 })();
 
 carregar(); bater();
-setInterval(bater, 15000);          // o pulso e o que mais envelhece na tela
+setInterval(bater, 15000);
 setInterval(carregar, RECARGA_MS);
 </script>
 </body>
