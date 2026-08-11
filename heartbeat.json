@@ -1,13 +1,13 @@
 {
- "ts": "2026-08-10T23:19:04-03:00",
- "epoch": 1786414744,
+ "ts": "2026-08-10T23:21:06-03:00",
+ "epoch": 1786414866,
  "estado": "ao vivo",
  "lives": 1,
- "doacoes": 164,
- "total": 686.0,
+ "doacoes": 165,
+ "total": 706.0,
  "intervalo": 120,
  "sessao": {
-  "doacoes": 101,
+  "doacoes": 102,
   "total": 72.0
  }
 }
