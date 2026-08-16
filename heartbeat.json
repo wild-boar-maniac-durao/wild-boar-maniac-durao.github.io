@@ -1,7 +1,7 @@
 {
- "ts": "2026-08-16T03:23:27-03:00",
- "epoch": 1786861407,
- "estado": "ao vivo",
+ "ts": "2026-08-16T03:25:29-03:00",
+ "epoch": 1786861529,
+ "estado": "aguardando",
  "lives": 1,
  "doacoes": 486,
  "total": 3220.0,
